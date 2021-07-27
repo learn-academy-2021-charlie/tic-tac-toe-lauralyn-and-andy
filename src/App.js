@@ -48,7 +48,15 @@ class App extends Component{
       
   }
 
-    restart =
+  restart = () => {
+    this.setState(
+      {board: ["", "", "", "", "", "", "", "", ""],
+      player1: true,
+      gameStatus: true,
+      availableSquares: 9}
+    )
+  }
+
 
   markSquare = (player, i) => {
     const { board, availableSquares} = this.state
@@ -101,7 +109,7 @@ class App extends Component{
         {this.state.player1 && !this.state.gameStatus && <h4>Player 1 won!</h4>}
         {!this.state.player1 && !this.state.gameStatus && <h4>Player 2 won!</h4>}
         {this.state.availableSquares === 0 && <h4>StaleMate!</h4>}
-
+r
         <div id="gameboard">
           {this.state.board.map((val, idx) => {
             return(
@@ -114,6 +122,7 @@ class App extends Component{
             )
           })}
         </div>
+        <button onClick={this.restart} >Restart</button>
       </>
     )
   }
