@@ -9,9 +9,12 @@ class App extends Component{
       board: ["", "", "", "", "", "", "", "", ""],
       player1: true,
       gameStatus: true,
-      availableSquares: 9
+      availableSquares: 9,
+      player1Marker:"",
+      player2Marker:"" 
     }
   }
+
 
   /*
   winning conditions:
@@ -106,10 +109,13 @@ class App extends Component{
       <>
         <h1>Tic Tac Toe</h1>
 
+        {this.state.player1 && this.state.gameStatus && <h4>Player 1's turn!</h4>}
+        {!this.state.player1 && this.state.gameStatus && <h4>Player 2's turn!</h4>}
         {this.state.player1 && !this.state.gameStatus && <h4>Player 1 won!</h4>}
         {!this.state.player1 && !this.state.gameStatus && <h4>Player 2 won!</h4>}
-        {this.state.availableSquares === 0 && <h4>StaleMate!</h4>}
-r
+        {this.state.availableSquares === 0 && this.state.gameStatus &&<h4>StaleMate!</h4>}
+       
+
         <div id="gameboard">
           {this.state.board.map((val, idx) => {
             return(
