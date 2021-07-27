@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Square from './components/Square'
 import './App.css'
+import MarkerOptions from './components/MarkerOptions'
 
 class App extends Component{
   constructor(props){
@@ -10,8 +11,10 @@ class App extends Component{
       player1: true,
       gameStatus: true,
       availableSquares: 9,
-      player1Marker:"",
-      player2Marker:"" 
+      player1Marker: "",
+      player2Marker: "",
+      gameStarted: false,
+      markersAvailable: ["X", "O"]
     }
   }
 
@@ -51,18 +54,22 @@ class App extends Component{
       
   }
 
+  // Restarts the game and resets the board
   restart = () => {
     this.setState(
       {board: ["", "", "", "", "", "", "", "", ""],
       player1: true,
       gameStatus: true,
-      availableSquares: 9}
+      availableSquares: 9,
+      player1Marker: "",
+      player2Marker: "",
+      gameStarted: false
+      }
     )
   }
 
-
   markSquare = (player, i) => {
-    const { board, availableSquares} = this.state
+    const { board } = this.state
 
     let square = board[i]
     if(square === ""){
@@ -75,8 +82,6 @@ class App extends Component{
       // Checks if the player won
       if (this.winSequence()) {
         this.setState({gameStatus: false})
-        console.log(this.state.gameStatus)
-        console.log("someone won!!!!")
       } else {
         // Only change the player if a square was marked and gameStatus is true
         this.setState({
@@ -87,16 +92,16 @@ class App extends Component{
   }
 
   handleGamePlay = (val, index) => {
-    const { board, player1, gameStatus, availableSquares } = this.state
+    const { board, player1, gameStatus } = this.state
     
     // Mark the square with the player's mark if gameStatus is true
     if (!gameStatus) {
       return
     }
      else if(player1) {
-      this.markSquare("X",index) 
+      this.markSquare(this.state.player1Marker, index) 
     } else{
-      this.markSquare("O",index) 
+      this.markSquare(this.state.player2Marker, index) 
     }
 
     this.setState({
@@ -104,17 +109,28 @@ class App extends Component{
     })
   }
 
+  // Choose markers for player 1 and 2 then start the game
+  pickMarker = (marker) => {
+    if (this.state.player1Marker === "") {
+      this.setState({ player1Marker: marker} )
+    } else {
+      this.setState({ player2Marker: marker,
+        gameStarted: !this.state.gameStarted} )
+    }
+  }
+
   render(){
     return(
       <>
         <h1>Tic Tac Toe</h1>
+
+        {!this.state.gameStarted && <MarkerOptions marker={this.pickMarker}/>}
 
         {this.state.player1 && this.state.gameStatus && <h4>Player 1's turn!</h4>}
         {!this.state.player1 && this.state.gameStatus && <h4>Player 2's turn!</h4>}
         {this.state.player1 && !this.state.gameStatus && <h4>Player 1 won!</h4>}
         {!this.state.player1 && !this.state.gameStatus && <h4>Player 2 won!</h4>}
         {this.state.availableSquares === 0 && this.state.gameStatus &&<h4>StaleMate!</h4>}
-       
 
         <div id="gameboard">
           {this.state.board.map((val, idx) => {
