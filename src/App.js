@@ -8,7 +8,8 @@ class App extends Component{
     this.state = {
       board: ["", "", "", "", "", "", "", "", ""],
       player1: true,
-      gameStatus: true
+      gameStatus: true,
+      availableSquares: 9
     }
   }
 
@@ -47,12 +48,18 @@ class App extends Component{
       
   }
 
+    restart =
+
   markSquare = (player, i) => {
-    const { board} = this.state
+    const { board, availableSquares} = this.state
 
     let square = board[i]
     if(square === ""){
       board[i] = player
+      this.setState({
+      availableSquares: this.state.availableSquares -1
+
+      })
 
       // Checks if the player won
       if (this.winSequence()) {
@@ -62,19 +69,20 @@ class App extends Component{
       } else {
         // Only change the player if a square was marked and gameStatus is true
         this.setState({
-          player1: !this.state.player1
+          player1: !this.state.player1,
         })
       }
     }
   }
 
   handleGamePlay = (val, index) => {
-    const { board, player1, gameStatus } = this.state
+    const { board, player1, gameStatus, availableSquares } = this.state
     
     // Mark the square with the player's mark if gameStatus is true
     if (!gameStatus) {
       return
-    } else if(player1) {
+    }
+     else if(player1) {
       this.markSquare("X",index) 
     } else{
       this.markSquare("O",index) 
@@ -92,6 +100,7 @@ class App extends Component{
 
         {this.state.player1 && !this.state.gameStatus && <h4>Player 1 won!</h4>}
         {!this.state.player1 && !this.state.gameStatus && <h4>Player 2 won!</h4>}
+        {this.state.availableSquares === 0 && <h4>StaleMate!</h4>}
 
         <div id="gameboard">
           {this.state.board.map((val, idx) => {
