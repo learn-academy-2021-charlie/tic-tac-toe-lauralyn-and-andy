@@ -6,7 +6,10 @@ class App extends Component{
   constructor(props){
     super(props)
     this.state = {
-      board: ["?", "?", "?", "?", "?", "?", "?", "?", "?"]
+      board: ["", "", "", "", "", "", "", "", ""],
+      player1: true,
+      gameStatus: true,
+       
     }
   }
 
@@ -24,15 +27,32 @@ class App extends Component{
   7) 0, 4, 8
   8) 2, 4, 6
   */
+  markSquare = (player, i) => {
+    const { board} = this.state
 
+    let square = board[i]
+    if(square === ""){
+      board[i] = player
+      this.setState({
+        player1: !this.state.player1
+      })
+    }
+  }
 
   handleGamePlay = (val, index) => {
-    const { board } = this.state
+    const { board,player1 } = this.state
+    if(player1){
+      this.markSquare("X",index) 
+    } else{
+      this.markSquare("O",index) 
+    }
 
-    board[index] = val
 
     this.setState({
       board: board
+
+
+      
     })
   }
 
