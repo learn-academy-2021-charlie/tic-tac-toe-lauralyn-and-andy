@@ -14,7 +14,7 @@ class App extends Component{
       player1Marker: "",
       player2Marker: "",
       gameStarted: false,
-      markersAvailable: ["X", "O"]
+      markersAvailable: ["X", "O", "A", "B"]
     }
   }
 
@@ -63,7 +63,8 @@ class App extends Component{
       availableSquares: 9,
       player1Marker: "",
       player2Marker: "",
-      gameStarted: false
+      gameStarted: false,
+      markersAvailable: ["X", "O", "A", "B"]
       }
     )
   }
@@ -111,6 +112,14 @@ class App extends Component{
 
   // Choose markers for player 1 and 2 then start the game
   pickMarker = (marker) => {
+    
+    // After a marker is selected, remove it from the available list of markers
+    const {markersAvailable} = this.state
+    let markerIdx = markersAvailable.indexOf(marker)
+    markersAvailable.splice(markerIdx, 1)
+    this.setState({ markersAvailable: markersAvailable})
+
+    // Set the player's marker
     if (this.state.player1Marker === "") {
       this.setState({ player1Marker: marker} )
     } else {
@@ -119,12 +128,19 @@ class App extends Component{
     }
   }
 
+  // Creates marker buttons for the players. Calls pickMarker
+  createMarkerButtons = () => {
+    return this.state.markersAvailable.map(val => {
+      return <button key={val} onClick={() => this.pickMarker(val)}>{val}</button>
+    })
+  }
+
   render(){
     return(
       <>
         <h1>Tic Tac Toe</h1>
 
-        {!this.state.gameStarted && <MarkerOptions marker={this.pickMarker}/>}
+        {!this.state.gameStarted && this.createMarkerButtons()}
 
         {this.state.player1 && this.state.gameStatus && <h4>Player 1's turn!</h4>}
         {!this.state.player1 && this.state.gameStatus && <h4>Player 2's turn!</h4>}
