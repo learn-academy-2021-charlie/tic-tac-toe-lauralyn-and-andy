@@ -8,8 +8,7 @@ class App extends Component{
     this.state = {
       board: ["", "", "", "", "", "", "", "", ""],
       player1: true,
-      gameStatus: true,
-       
+      gameStatus: true
     }
   }
 
@@ -29,21 +28,23 @@ class App extends Component{
   */
   winSequence = () => {
     const { board} = this.state
-    if((board[0] === board[1] && board[0] === board[2])
-      || (board[3] === board[4] && board[3] === board[5])
-      || (board[6] === board[7] && board[6] === board[8])
-      || (board[0] === board[3] && board[0] === board[6])
-      || (board[1] === board[4] && board[1] === board[7])
-      || (board[2] === board[5] && board[2] === board[8])
-      || (board[0] === board[4] && board[0] === board[8])
-      || (board[2] === board[4] && board[2] === board[6])
+
+    // scan the whole board and check that there's at least one space marked
+    // in that condition
+    if((board[0] === board[1] && board[0] === board[2] && board[0] !== "")
+      || (board[3] === board[4] && board[3] === board[5] && board[3] !== "")
+      || (board[6] === board[7] && board[6] === board[8] && board[6] !== "")
+      || (board[0] === board[3] && board[0] === board[6] && board[0] !== "")
+      || (board[1] === board[4] && board[1] === board[7] && board[1] !== "")
+      || (board[2] === board[5] && board[2] === board[8] && board[2] !== "")
+      || (board[0] === board[4] && board[0] === board[8] && board[0] !== "")
+      || (board[2] === board[4] && board[2] === board[6] && board[2] !== "")
       ){ 
         return true
       } else {
         return false
       }
       
-
   }
 
   markSquare = (player, i) => {
@@ -52,28 +53,35 @@ class App extends Component{
     let square = board[i]
     if(square === ""){
       board[i] = player
-      if (this.winSequence)
-      {console.log(player)}
-      this.setState({
-        player1: !this.state.player1
-      })
+
+      // Checks if the player won
+      if (this.winSequence()) {
+        this.setState({gameStatus: false})
+        console.log(this.state.gameStatus)
+        console.log("someone won!!!!")
+      } else {
+        // Only change the player if a square was marked and gameStatus is true
+        this.setState({
+          player1: !this.state.player1
+        })
+      }
     }
   }
 
   handleGamePlay = (val, index) => {
-    const { board,player1 } = this.state
-    if(player1){
+    const { board, player1, gameStatus } = this.state
+    
+    // Mark the square with the player's mark if gameStatus is true
+    if (!gameStatus) {
+      return
+    } else if(player1) {
       this.markSquare("X",index) 
     } else{
       this.markSquare("O",index) 
     }
 
-
     this.setState({
       board: board
-
-
-      
     })
   }
 
@@ -81,6 +89,9 @@ class App extends Component{
     return(
       <>
         <h1>Tic Tac Toe</h1>
+
+        {this.state.player1 && !this.state.gameStatus && <h4>Player 1 won!</h4>}
+        {!this.state.player1 && !this.state.gameStatus && <h4>Player 2 won!</h4>}
 
         <div id="gameboard">
           {this.state.board.map((val, idx) => {
